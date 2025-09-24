@@ -1,24 +1,24 @@
 from ui import showMainMenu, pause ,box
-
+from services import *
 
 def main():
     while True:
         op = showMainMenu()
         if op == "1":
-            pause()
+            agregarService()
         elif op == "2":
-            pause()
+            listarService()
         elif op == "3":
-            pause()
+            buscarService()
         elif op == "4":
-            pause()
+            eliminarService()
         elif op == "5":
-            pause()
+            cambiarClaveMaestraService()
         elif op == "6":
             print("Cerrando!!")
             break
         elif op.lower() == "init":
-            pause()    
+            inicializarBovedaService()     
         else:
             print("Opcion invalida.")
             pause()
