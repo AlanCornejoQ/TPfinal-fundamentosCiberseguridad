@@ -123,7 +123,41 @@ def listarService():
 
 def buscarService():
     box("BUSCAR CONTRASEÑAS POR SERVICIO")
-    if not _asegurarSesionAbierta(): return; pause()
+    if not storage.bovedaExiste():
+        print("no existe boveda. escriba 'init' para crear una.")
+        pause(); return
+    if not storage.estaAbierta():
+        mpw = getpass.getpass("clave maestra: ")
+        if not storage.abrirBoveda(mpw):
+            print("clave incorrecta."); pause(); return
+
+    termino = input("Ingrese termino de servicio a buscar: ").strip()
+    if not termino:
+        print("termino vacio."); pause(); return
+
+    try:
+        filas = storage.buscarEntradasPorServicio(termino)
+        from src.ui import imprimirTablaBasica
+        imprimirTablaBasica(filas)
+
+        sel_txt = input("\nSeleccione numero para ver detalles o 0 para volver: ").strip()
+        try:
+            sel = int(sel_txt)
+        except ValueError:
+            sel = 0
+
+        if sel != 0:
+            try:
+                claro = storage.obtenerEntrada(sel)
+                print(f"\nDetalle id={sel}:")
+                print(f"contrasena (descifrada): {claro}")
+            except Exception as e:
+                print(f"error al obtener detalle: {e}")
+
+    except Exception as e:
+        print(f"error en busqueda: {e}")
+
+    pause()
 
 def eliminarService():
     box("ELIMINAR CONTRASEÑA",padding=10)

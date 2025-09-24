@@ -137,3 +137,21 @@ def obtenerEntrada(entrada_id: int) -> str:
     from src.crypto_utils import descifrarAESGCM
     claro = descifrarAESGCM(_claveDatos, nonce, ct)
     return claro.decode("utf-8")
+
+def buscarEntradasPorServicio(termino: str) -> List[Dict]:
+    if not _abierta or _conexion is None:
+        raise RuntimeError("boveda no abierta")
+    like = f"%{termino}%"
+    cur = _conexion.execute(
+        "SELECT id, servicio, usuario, creado_en FROM entradas WHERE servicio LIKE ? ORDER BY id DESC",
+        (like,)
+    )
+    filas = []
+    for r in cur.fetchall():
+        filas.append({
+            "id": r[0],
+            "servicio": r[1],
+            "usuario": r[2],
+            "creado_en": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(r[3]))
+        })
+    return filas
