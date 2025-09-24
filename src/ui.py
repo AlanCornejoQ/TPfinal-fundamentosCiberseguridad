@@ -24,3 +24,11 @@ def showMainMenu() -> str:
     print("[6] Salir")
     return input("\nSeleccione una opcion: ").strip()
 
+def imprimirTablaBasica(filas):
+    if not filas:
+        print("(sin entradas)")
+        return
+    print("#  servicio                      usuario                         fecha")
+    print("-"*85)
+    for f in filas:
+        print(f"{f['id']:<3}{f['servicio'][:26]:<28}{f['usuario'][:30]:<32}{f['creado_en']}")

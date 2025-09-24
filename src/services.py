@@ -88,7 +88,38 @@ def agregarService():
 
 def listarService():
     box("CONTRASEÑAS ALMACENADAS",padding=10)
-    if not _asegurarSesionAbierta(): return; pause()
+    if not storage.bovedaExiste():
+        print("no existe boveda. escriba 'init' para crear una.")
+        pause(); return
+    if not storage.estaAbierta():
+        mpw = getpass.getpass("clave maestra: ")
+        if not storage.abrirBoveda(mpw):
+            print("clave incorrecta."); pause(); return
+
+    try:
+        filas = storage.listarEntradas()
+        from src.ui import imprimirTablaBasica
+        imprimirTablaBasica(filas)
+
+        # pedir id para ver detalle
+        sel_txt = input("\nSeleccione numero para ver detalles o 0 para volver: ").strip()
+        try:
+            sel = int(sel_txt)
+        except ValueError:
+            sel = 0
+
+        if sel != 0:
+            try:
+                claro = storage.obtenerEntrada(sel)
+                print(f"\nDetalle id={sel}:")
+                print(f"contrasena (descifrada): {claro}")
+            except Exception as e:
+                print(f"error al obtener detalle: {e}")
+
+    except Exception as e:
+        print(f"error al listar: {e}")
+
+    pause()
 
 def buscarService():
     box("BUSCAR CONTRASEÑAS POR SERVICIO")

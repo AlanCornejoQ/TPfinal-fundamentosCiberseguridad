@@ -109,3 +109,31 @@ def agregarEntrada(servicio: str, usuario: str, secreto: str):
         (servicio, usuario, nonce, ct, ts, ts)
     )
     _conexion.commit()
+
+def listarEntradas() -> List[Dict]:
+    if not _abierta or _conexion is None:
+        raise RuntimeError("boveda no abierta")
+    cur = _conexion.execute(
+        "SELECT id, servicio, usuario, creado_en FROM entradas ORDER BY id DESC"
+    )
+    filas = []
+    for r in cur.fetchall():
+        filas.append({
+            "id": r[0],
+            "servicio": r[1],
+            "usuario": r[2],
+            "creado_en": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(r[3]))
+        })
+    return filas
+def obtenerEntrada(entrada_id: int) -> str:
+    if not _abierta or _conexion is None or _claveDatos is None:
+        raise RuntimeError("boveda no abierta")
+    fila = _conexion.execute(
+        "SELECT nonce, cifrado FROM entradas WHERE id=?", (entrada_id,)
+    ).fetchone()
+    if not fila:
+        raise KeyError("entrada no encontrada")
+    nonce, ct = fila
+    from src.crypto_utils import descifrarAESGCM
+    claro = descifrarAESGCM(_claveDatos, nonce, ct)
+    return claro.decode("utf-8")
