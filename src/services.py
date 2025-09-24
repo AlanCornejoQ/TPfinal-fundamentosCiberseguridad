@@ -197,4 +197,27 @@ def eliminarService():
 
 def cambiarClaveMaestraService():
     box("CAMBIAR CONTRASEÑA MAESTRA / INICIALIZAR")
-    if not _asegurarSesionAbierta(): return; pause()
+    if not storage.bovedaExiste():
+        print("no existe boveda. escriba 'init' para crear una.")
+        pause(); return
+    if not storage.estaAbierta():
+        mpw = getpass.getpass("clave maestra actual: ")
+        if not storage.abrirBoveda(mpw):
+            print("clave incorrecta."); pause(); return
+
+    actual = getpass.getpass("clave maestra actual (para confirmar): ")
+    nueva1 = getpass.getpass("nueva clave maestra: ")
+    nueva2 = getpass.getpass("confirmar nueva clave maestra: ")
+
+    if nueva1 != nueva2:
+        print("no coinciden.")
+    elif len(nueva1) < 8:
+        print("la clave debe tener al menos 8 caracteres.")
+    else:
+        try:
+            storage.cambiarClaveMaestra(actual, nueva1)
+            print("clave maestra actualizada correctamente.")
+        except Exception as e:
+            print(f"error: {e}")
+
+    pause()

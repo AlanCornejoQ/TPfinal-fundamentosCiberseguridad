@@ -161,3 +161,25 @@ def eliminarEntrada(entrada_id: int):
         raise RuntimeError("boveda no abierta")
     _conexion.execute("DELETE FROM entradas WHERE id=?", (entrada_id,))
     _conexion.commit()
+
+def cambiarClaveMaestra(clave_actual: str, clave_nueva: str):
+    global _hashMaestro, _salKdf, _claveDatos
+    if not _abierta or _conexion is None:
+        raise RuntimeError("boveda no abierta")
+
+    if not verificarClaveMaestra(clave_actual, _hashMaestro):
+        raise ValueError("clave actual incorrecta")
+
+    nuevo_hash = hashClaveMaestra(clave_nueva)
+    nueva_sal = secrets.token_bytes(16)
+
+    _conexion.execute(
+        "UPDATE meta SET hash_maestro=?, sal_kdf=? WHERE id=1",
+        (nuevo_hash, nueva_sal)
+    )
+    _conexion.commit()
+
+    # actualizar estado en memoria
+    _hashMaestro = nuevo_hash
+    _salKdf = nueva_sal
+    _claveDatos = derivarClaveDesdeContrasena(clave_nueva, nueva_sal)
