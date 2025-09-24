@@ -15,7 +15,6 @@ def showMainMenu() -> str:
     print("+" + "-"*47 + "+")
     print("|             GESTOR DE CONTRASENAS             |")
     print("+" + "-"*47 + "+")
-    print("[0] Abrir boveda (prueba)") 
     print("[1] Agregar nueva contraseña")
     print("[2] Ver contraseñas almacenadas")
     print("[3] Buscar contraseñas por servicio")

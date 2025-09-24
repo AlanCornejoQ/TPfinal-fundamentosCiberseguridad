@@ -10,8 +10,6 @@ def main():
             print("No se encontro una boveda.")
             print("Escriba 'init' para crear una nueva boveda.\n")
         op = showMainMenu()
-        if op == "0":          
-            abrirBovedaService()
         if op == "1":
             agregarService()
         elif op == "2":
