@@ -634,5 +634,17 @@ FodyWeavers.xsd
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
+# SQLite vault
+vault.sqlite3
+*.sqlite3
+*.sqlite
+*.db
+*.db-journal
+*.sqlite-wal
+*.sqlite-shm
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,windows,visualstudio,visualstudiocode,python,git

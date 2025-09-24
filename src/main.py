@@ -1,9 +1,17 @@
-from ui import showMainMenu, pause ,box
-from services import *
+from src.ui import showMainMenu, pause, box
+from src.services import *
 
 def main():
+    import src.storage as storage
+    
     while True:
+        if not storage.bovedaExiste():
+            box("NO HAY BOVEDA")
+            print("No se encontro una boveda.")
+            print("Escriba 'init' para crear una nueva boveda.\n")
         op = showMainMenu()
+        if op == "0":          
+            abrirBovedaService()
         if op == "1":
             agregarService()
         elif op == "2":
@@ -15,10 +23,14 @@ def main():
         elif op == "5":
             cambiarClaveMaestraService()
         elif op == "6":
+            if storage.estaAbierta():
+                storage.cerrarBoveda()
             print("Cerrando!!")
             break
         elif op.lower() == "init":
-            inicializarBovedaService()     
+            inicializarBovedaService()
+        elif op.lower() == "logout":
+            cerrarSesionService()  
         else:
             print("Opcion invalida.")
             pause()
