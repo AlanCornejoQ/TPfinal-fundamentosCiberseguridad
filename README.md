@@ -47,7 +47,7 @@ conda env create -f environment.yml
 ```
 #### Activar el entorno
 ```bash
-conda activate password-manager
+conda activate gestor
 ```
 
 ### Para ejecutar la palicacion desde la raiz del proyecto
