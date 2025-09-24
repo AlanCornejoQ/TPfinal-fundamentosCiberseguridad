@@ -161,7 +161,39 @@ def buscarService():
 
 def eliminarService():
     box("ELIMINAR CONTRASEÑA",padding=10)
-    if not _asegurarSesionAbierta(): return; pause()
+    if not storage.bovedaExiste():
+        print("no existe boveda. escriba 'init' para crear una.")
+        pause(); return
+    if not storage.estaAbierta():
+        mpw = getpass.getpass("clave maestra: ")
+        if not storage.abrirBoveda(mpw):
+            print("clave incorrecta."); pause(); return
+
+    try:
+        filas = storage.listarEntradas()
+        from src.ui import imprimirTablaBasica
+        imprimirTablaBasica(filas)
+
+        sel_txt = input("\nSeleccione numero de id para eliminar o 0 para volver: ").strip()
+        try:
+            sel = int(sel_txt)
+        except ValueError:
+            sel = 0
+
+        if sel != 0:
+            confirm = input(f"Seguro que desea eliminar id={sel}? (s/n): ").strip().lower()
+            if confirm == "s":
+                try:
+                    storage.eliminarEntrada(sel)
+                    print(f"entrada id={sel} eliminada.")
+                except Exception as e:
+                    print(f"error al eliminar: {e}")
+            else:
+                print("operacion cancelada.")
+    except Exception as e:
+        print(f"error en eliminacion: {e}")
+
+    pause()
 
 def cambiarClaveMaestraService():
     box("CAMBIAR CONTRASEÑA MAESTRA / INICIALIZAR")

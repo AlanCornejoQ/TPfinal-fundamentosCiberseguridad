@@ -114,7 +114,7 @@ def listarEntradas() -> List[Dict]:
     if not _abierta or _conexion is None:
         raise RuntimeError("boveda no abierta")
     cur = _conexion.execute(
-        "SELECT id, servicio, usuario, creado_en FROM entradas ORDER BY id DESC"
+        "SELECT id, servicio, usuario, creado_en FROM entradas ORDER BY id ASC"
     )
     filas = []
     for r in cur.fetchall():
@@ -155,3 +155,9 @@ def buscarEntradasPorServicio(termino: str) -> List[Dict]:
             "creado_en": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(r[3]))
         })
     return filas
+
+def eliminarEntrada(entrada_id: int):
+    if not _abierta or _conexion is None:
+        raise RuntimeError("boveda no abierta")
+    _conexion.execute("DELETE FROM entradas WHERE id=?", (entrada_id,))
+    _conexion.commit()
