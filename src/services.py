@@ -57,21 +57,47 @@ def inicializarBovedaService():
     pause()
 
 def agregarService():
-    box("AGREGAR NUEVA CONTRASENA",padding=10)
-    if not _asegurarSesionAbierta(): return; pause()
+    box("AGREGAR NUEVA CONTRASEÑA",padding=10)
+    if not storage.bovedaExiste():
+        print("no existe boveda. escriba 'init' para crear una.")
+        pause(); return
+    if not storage.estaAbierta():
+        mpw = getpass.getpass("clave maestra: ")
+        if not storage.abrirBoveda(mpw):
+            print("clave incorrecta."); pause(); return
+
+    servicio = input("Ingrese el nombre del servicio: ").strip()
+    usuario  = input("Ingrese el usuario o correo: ").strip()
+    pw1 = getpass.getpass("Ingrese contrasena: ")
+    pw2 = getpass.getpass("Confirmar contrasena: ")
+
+    if not servicio or not usuario:
+        print("servicio y usuario no pueden ser vacios.")
+    elif pw1 != pw2:
+        print("no coinciden, no se guardo.")
+    elif len(pw1) == 0:
+        print("contrasena no puede ser vacia.")
+    else:
+        try:
+            storage.agregarEntrada(servicio, usuario, pw1)
+            print(f"contrasena para '{servicio}' guardada correctamente")
+        except Exception as e:
+            print(f"error al guardar: {e}")
+
+    pause()
 
 def listarService():
-    box("CONTRASENAS ALMACENADAS",padding=10)
+    box("CONTRASEÑAS ALMACENADAS",padding=10)
     if not _asegurarSesionAbierta(): return; pause()
 
 def buscarService():
-    box("BUSCAR CONTRASENAS POR SERVICIO")
+    box("BUSCAR CONTRASEÑAS POR SERVICIO")
     if not _asegurarSesionAbierta(): return; pause()
 
 def eliminarService():
-    box("ELIMINAR CONTRASENA",padding=10)
+    box("ELIMINAR CONTRASEÑA",padding=10)
     if not _asegurarSesionAbierta(): return; pause()
 
 def cambiarClaveMaestraService():
-    box("CAMBIAR CONTRASENA MAESTRA / INICIALIZAR")
+    box("CAMBIAR CONTRASEÑA MAESTRA / INICIALIZAR")
     if not _asegurarSesionAbierta(): return; pause()

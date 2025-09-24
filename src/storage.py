@@ -1,6 +1,10 @@
 import os, sqlite3, time, secrets
 from typing import Optional, List, Dict
 from src.crypto_utils import hashClaveMaestra, verificarClaveMaestra, derivarClaveDesdeContrasena
+from src.crypto_utils import (
+    hashClaveMaestra, verificarClaveMaestra, derivarClaveDesdeContrasena,
+    cifrarAESGCM, descifrarAESGCM
+)
 
 RUTA_DB = os.path.join(os.path.dirname(__file__), "..", "vault.sqlite3")
 
@@ -91,3 +95,17 @@ def cerrarBoveda():
     _conexion = None
     _claveDatos = None
     _abierta = False
+
+def agregarEntrada(servicio: str, usuario: str, secreto: str):
+    if not _abierta or _conexion is None or _claveDatos is None:
+        raise RuntimeError("boveda no abierta")
+    if not servicio or not usuario or not secreto:
+        raise ValueError("servicio/usuario/secreto no pueden ser vacios")
+
+    nonce, ct = cifrarAESGCM(_claveDatos, secreto.encode("utf-8"))
+    ts = time.time()
+    _conexion.execute(
+        "INSERT INTO entradas(servicio, usuario, nonce, cifrado, creado_en, actualizado_en) VALUES(?,?,?,?,?,?)",
+        (servicio, usuario, nonce, ct, ts, ts)
+    )
+    _conexion.commit()
